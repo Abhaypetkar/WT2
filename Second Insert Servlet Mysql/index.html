@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <title>Add Book</title>
+  </head>
+  <body>
+    <h1>Add a New Book</h1>
+    <form action="insert" method="post">
+      <label for="bookId">Book ID:</label><br />
+      <input type="text" id="bookId" name="bookId" required /><br /><br />
+
+      <label for="bookTitle">Book Title:</label><br />
+      <input type="text" id="bookTitle" name="bookTitle" required /><br /><br />
+
+      <label for="bookAuthor">Book Author:</label><br />
+      <input
+        type="text"
+        id="bookAuthor"
+        name="bookAuthor"
+        required
+      /><br /><br />
+
+      <label for="bookPrice">Book Price:</label><br />
+      <input
+        type="number"
+        id="bookPrice"
+        name="bookPrice"
+        step="0.01"
+        required
+      /><br /><br />
+
+      <label for="quantity">Quantity:</label><br />
+      <input type="number" id="quantity" name="quantity" required /><br /><br />
+
+      <button type="submit">Add Book</button>
+    </form>
+  </body>
+</html>
