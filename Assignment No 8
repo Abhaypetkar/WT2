@@ -1,0 +1,93 @@
+<%@ page import="java.sql.*" %>
+<html>
+<head>
+    <title>Student Info Manager</title>
+</head>
+<body>
+<%
+    String url = "jdbc:mysql://localhost:3306/studentdb";
+    String username = "root";
+    String password = "";  // Change this to your MySQL password
+
+    Connection con = null;
+    PreparedStatement pst = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+
+    String stud_id = request.getParameter("stud_id");
+    if (stud_id != null) {
+        String stud_name = request.getParameter("stud_name");
+        String classVal = request.getParameter("class");
+        String division = request.getParameter("division");
+        String city = request.getParameter("city");
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(url, username, password);
+
+            String sql = "UPDATE students_info SET stud_name=?, class=?, division=?, city=? WHERE stud_id=?";
+            pst = con.prepareStatement(sql);
+            pst.setString(1, stud_name);
+            pst.setString(2, classVal);
+            pst.setString(3, division);
+            pst.setString(4, city);
+            pst.setInt(5, Integer.parseInt(stud_id));
+
+            int rows = pst.executeUpdate();
+            if (rows > 0) {
+                out.println("<p style='color:green;'>Student updated successfully.</p>");
+            } else {
+                out.println("<p style='color:red;'>Student ID not found.</p>");
+            }
+        } catch (Exception e) {
+            out.println("<p style='color:red;'>Error: " + e.getMessage() + "</p>");
+        } finally {
+            try { if (pst != null) pst.close(); if (con != null) con.close(); } catch (Exception e) {}
+        }
+    }
+%>
+
+<h2>Update Student Information</h2>
+<form method="post" action="student_info.jsp">
+    Student ID: <input type="text" name="stud_id" required/><br/>
+    Name: <input type="text" name="stud_name" required/><br/>
+    Class: <input type="text" name="class" required/><br/>
+    Division: <input type="text" name="division" required/><br/>
+    City: <input type="text" name="city" required/><br/>
+    <input type="submit" value="Update Student"/>
+</form>
+
+<hr/>
+
+<h2>All Students Info</h2>
+<table border="1">
+    <tr>
+        <th>ID</th><th>Name</th><th>Class</th><th>Division</th><th>City</th>
+    </tr>
+<%
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        con = DriverManager.getConnection(url, username, password);
+        stmt = con.createStatement();
+        rs = stmt.executeQuery("SELECT * FROM students_info");
+
+        while (rs.next()) {
+%>
+    <tr>
+        <td><%= rs.getInt("stud_id") %></td>
+        <td><%= rs.getString("stud_name") %></td>
+        <td><%= rs.getString("class") %></td>
+        <td><%= rs.getString("division") %></td>
+        <td><%= rs.getString("city") %></td>
+    </tr>
+<%
+        }
+    } catch (Exception e) {
+        out.println("<p style='color:red;'>Error loading data: " + e.getMessage() + "</p>");
+    } finally {
+        try { if (rs != null) rs.close(); if (stmt != null) stmt.close(); if (con != null) con.close(); } catch (Exception e) {}
+    }
+%>
+</table>
+</body>
+</html>
